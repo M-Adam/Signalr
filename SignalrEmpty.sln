@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalrEmpty", "SignalrEmpty\SignalrEmpty.csproj", "{42B80FF2-BE12-4DD3-AB60-12D409184735}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalrEmpty", "SignalrEmpty\SignalrEmpty.csproj", "{42B80FF2-BE12-4DD3-AB60-12D409184735}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalrClient", "SignalrClient\SignalrClient.csproj", "{C4272B78-06E6-482B-AF72-D56DA42AFF44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalrClient", "SignalrClient\SignalrClient.csproj", "{C4272B78-06E6-482B-AF72-D56DA42AFF44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalrCommon", "SignalrCommon\SignalrCommon.csproj", "{1940410E-7D0B-4F12-B7E6-0B1E2B6BFCCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C4272B78-06E6-482B-AF72-D56DA42AFF44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4272B78-06E6-482B-AF72-D56DA42AFF44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4272B78-06E6-482B-AF72-D56DA42AFF44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1940410E-7D0B-4F12-B7E6-0B1E2B6BFCCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1940410E-7D0B-4F12-B7E6-0B1E2B6BFCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1940410E-7D0B-4F12-B7E6-0B1E2B6BFCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1940410E-7D0B-4F12-B7E6-0B1E2B6BFCCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

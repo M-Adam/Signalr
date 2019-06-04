@@ -2,33 +2,43 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
+using SignalrCommon;
+using static SignalrClient.Helpers;
 
 namespace SignalrClient
 {
     class Program
     {
-        static HubConnection _hubConnection;
-        const string HubChatMethod = "sendToAll";
         const string ConnectionString = "https://localhost:44300/chat";
-        static IDisposable _handler;
+
+        private static readonly List<IDisposable> Handlers = new List<IDisposable>();
+        static HubConnection _hubConnection;
+        
 
         static async Task Main(string[] args)
         {
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(ConnectionString)
                 .Build();
-
+            
             _hubConnection.Closed += HubConnectionOnClosed;
-            _handler = _hubConnection.On<string, string>("sendToAll", PrintMessage);
+
+            var chatMethodHandler = 
+                _hubConnection.On<string, string>(ChatMethods.Text, PrintChatMessage);
+            
+            var objectMethodHandler = 
+                _hubConnection.On<string, ExampleEntity>(ChatMethods.Object, PrintObjectMessage);
+
+            Handlers.Add(chatMethodHandler);
+            Handlers.Add(objectMethodHandler);
 
             await _hubConnection.StartAsync();
             Console.WriteLine($"Connected to {ConnectionString}.");
 
             await EnterChat();
 
-            _handler?.Dispose();
+            Handlers.ForEach(x => x.Dispose());
             await _hubConnection.StopAsync();
-            await _hubConnection.DisposeAsync();
         }
 
         static async Task EnterChat()
@@ -36,6 +46,7 @@ namespace SignalrClient
             Console.WriteLine("Enter your nickname: ");
             var nickname = Console.ReadLine();
             string input;
+
             do
             {
                 input = Console.ReadLine();
@@ -43,24 +54,20 @@ namespace SignalrClient
 
                 if (string.IsNullOrWhiteSpace(input))
                     continue;
-                
-                await _hubConnection.InvokeAsync(HubChatMethod, nickname, input);
+
+                if (input.Equals("object"))
+                {
+                    var result = await _hubConnection.InvokeAsync<Guid>(ChatMethods.Object, nickname, new ExampleEntity
+                    {
+                        Data = "some data"
+                    });
+                    Console.WriteLine("Sending object result: " + result);
+                }
+                else
+                {
+                    await _hubConnection.InvokeAsync(ChatMethods.Text, nickname, input);
+                }
             } while (input?.Equals("exit") != true);
-        }
-
-        static void PrintMessage(string sender, string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"[{DateTime.Now.ToShortTimeString()}] {sender}: {message}");
-            Console.ResetColor();
-        }
-
-        static void ClearCurrentConsoleLine()
-        {
-            var currentLineCursor = Console.CursorTop-1;
-            Console.SetCursorPosition(0, Console.CursorTop-1);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
         }
 
         static async Task HubConnectionOnClosed(Exception arg)
