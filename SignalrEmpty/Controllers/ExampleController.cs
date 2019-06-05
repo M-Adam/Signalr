@@ -18,7 +18,7 @@ namespace SignalrEmpty.Controllers
             _hubContext = hubContext;
         }
 
-        [HttpGet("{message}")]
+        [HttpGet("send/{message}")]
         public async Task<IActionResult> HubTest([FromRoute] string message)
         {
             await _hubContext.Clients.All.SendAsync(ChatMethods.Text, nameof(ExampleController), message);

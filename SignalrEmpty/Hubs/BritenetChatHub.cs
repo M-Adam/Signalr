@@ -20,7 +20,6 @@ namespace SignalrEmpty.Hubs
             return Guid.NewGuid();
         }
 
-        //ToDo: przetestować dla obiektów
         //ToDo: sprawdzić działanie grup - onconnected - dodwanie - ondisconnected - usuwanie
         //ToDo: connectionId czy się zmienia za każdą wiadomością
         //wspomnieć o działaniu DI, są transient

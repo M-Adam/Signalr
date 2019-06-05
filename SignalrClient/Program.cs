@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using SignalrCommon;
 using static SignalrClient.Helpers;
@@ -9,41 +10,39 @@ namespace SignalrClient
 {
     class Program
     {
-        const string ConnectionString = "https://localhost:44300/chat";
+        const string ConnectionString = "https://signalrempty.azurewebsites.net/chat";
 
-        private static readonly List<IDisposable> Handlers = new List<IDisposable>();
+        static List<IDisposable> _handlers;
         static HubConnection _hubConnection;
         
-
         static async Task Main(string[] args)
         {
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(ConnectionString)
                 .Build();
-            
-            _hubConnection.Closed += HubConnectionOnClosed;
 
-            var chatMethodHandler = 
+            var chatMethodHandler =
                 _hubConnection.On<string, string>(ChatMethods.Text, PrintChatMessage);
-            
-            var objectMethodHandler = 
+
+            var objectMethodHandler =
                 _hubConnection.On<string, ExampleEntity>(ChatMethods.Object, PrintObjectMessage);
 
-            Handlers.Add(chatMethodHandler);
-            Handlers.Add(objectMethodHandler);
+            _handlers = new List<IDisposable>
+            {
+                chatMethodHandler, objectMethodHandler
+            };
 
             await _hubConnection.StartAsync();
-            Console.WriteLine($"Connected to {ConnectionString}.");
 
             await EnterChat();
 
-            Handlers.ForEach(x => x.Dispose());
+            _handlers.ForEach(x => x.Dispose());
             await _hubConnection.StopAsync();
         }
 
         static async Task EnterChat()
         {
-            Console.WriteLine("Enter your nickname: ");
+            Console.Write("Nickname: ");
             var nickname = Console.ReadLine();
             string input;
 
@@ -68,12 +67,6 @@ namespace SignalrClient
                     await _hubConnection.InvokeAsync(ChatMethods.Text, nickname, input);
                 }
             } while (input?.Equals("exit") != true);
-        }
-
-        static async Task HubConnectionOnClosed(Exception arg)
-        {
-            Console.Error.WriteLine(arg);
-            await _hubConnection.StartAsync();
         }
     }
 }
