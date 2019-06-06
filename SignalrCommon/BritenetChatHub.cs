@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using SignalrCommon;
 
-namespace SignalrEmpty.Hubs
+namespace SignalrCommon
 {
     public class BritenetChatHub : Hub
     {
@@ -19,9 +18,5 @@ namespace SignalrEmpty.Hubs
             await Clients.AllExcept(Context.ConnectionId).SendAsync(ChatMethods.Object, sender, obj);
             return Guid.NewGuid();
         }
-
-        //ToDo: sprawdzić działanie grup - onconnected - dodwanie - ondisconnected - usuwanie
-        //ToDo: connectionId czy się zmienia za każdą wiadomością
-        //wspomnieć o działaniu DI, są transient
     }
 }

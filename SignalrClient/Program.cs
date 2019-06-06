@@ -10,7 +10,8 @@ namespace SignalrClient
 {
     class Program
     {
-        const string ConnectionString = "https://signalrempty.azurewebsites.net/chat";
+        //const string ConnectionString = "https://signalrempty.azurewebsites.net/chat";
+        const string ConnectionString = "https://localhost:44350/chat";
 
         static List<IDisposable> _handlers;
         static HubConnection _hubConnection;

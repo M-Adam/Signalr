@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SignalrCommon;
 
-namespace SignalrEmpty
+namespace SignalrAzure
 {
     public class Startup
     {
         private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -26,7 +31,7 @@ namespace SignalrEmpty
                 options.EnableDetailedErrors = true;
                 options.KeepAliveInterval = TimeSpan.FromMinutes(1);
                 options.HandshakeTimeout = TimeSpan.FromMinutes(2);
-            });
+            }).AddAzureSignalR(_configuration["AzureSignalr"]);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -34,7 +39,7 @@ namespace SignalrEmpty
             app.UseDeveloperExceptionPage();
             app.UseMvc();
 
-            app.UseSignalR(x =>
+            app.UseAzureSignalR(x =>
             {
                 x.MapHub<BritenetChatHub>("/chat");
             });

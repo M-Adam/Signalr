@@ -10,19 +10,18 @@ namespace SignalrBenchmark
 {
     class Program
     {
-        private const int NumberOfClients = 1000;
-        const string ConnectionString = "https://signalrempty.azurewebsites.net/chat";
+        private const int NumberOfClients = 300;
+        const string ConnectionStringEmbedded = "https://signalrempty.azurewebsites.net/chat";
+        const string ConnectionStringService = "https://signalrazure.azurewebsites.net/chat";
 
         static async Task Main(string[] args)
         {
+            var str = Console.ReadKey().KeyChar == '1' ? ConnectionStringEmbedded : ConnectionStringService;
+
             var hubConnections = new List<HubConnection>(NumberOfClients);
             for (var i = 0; i < NumberOfClients; i++)
             {
-                hubConnections.Add(new HubConnectionBuilder().WithUrl(ConnectionString, options =>
-                {
-                    //options.CloseTimeout = TimeSpan.FromMinutes(1);
-                    
-                }).Build());
+                hubConnections.Add(new HubConnectionBuilder().WithUrl(str).Build());
             }
 
             var cts = new CancellationTokenSource();
@@ -75,8 +74,14 @@ namespace SignalrBenchmark
                 var a = Guid.NewGuid().ToString();
                 var b = Guid.NewGuid().ToString();
                 Console.WriteLine(j + "\t:" + a + b);
-                await connection.InvokeAsync(ChatMethods.Text, a, b, c);
+                try
+                {
+                    await connection.InvokeAsync(ChatMethods.Text, a, b, c);
+                }
+                catch { }
+                
             }
+            Console.WriteLine(j + " out of loop");
         }
     }
 
