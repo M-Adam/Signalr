@@ -29,8 +29,8 @@ namespace SignalrAzure
             {
                 options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
                 options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
-                options.HandshakeTimeout = TimeSpan.FromMinutes(2);
+                options.KeepAliveInterval = TimeSpan.FromMinutes(5);
+                options.HandshakeTimeout = TimeSpan.FromMinutes(5);
             }).AddAzureSignalR(_configuration["AzureSignalr"]);
         }
 
