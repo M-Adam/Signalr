@@ -23,11 +23,5 @@ namespace SignalrEmpty.Controllers
             await _hubContext.Clients.All.SendAsync(ChatMethods.Text, nameof(ExampleController), message);
             return Ok(message);
         }
-
-        [HttpGet("exception")]
-        public IActionResult Exception()
-        {
-            throw new Exception();
-        }
     }
 }

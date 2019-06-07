@@ -20,18 +20,11 @@ namespace SignalrEmpty
             services.AddApplicationInsightsTelemetry(_configuration["AppInsights"]);
             services.AddMvc();
 
-            services.AddSignalR(options =>
-            {
-                options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
-                options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(5);
-                options.HandshakeTimeout = TimeSpan.FromMinutes(5);
-            });
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
             app.UseMvc();
 
             app.UseSignalR(x =>

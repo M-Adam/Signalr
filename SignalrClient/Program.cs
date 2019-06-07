@@ -4,16 +4,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using SignalrCommon;
-using static SignalrClient.Helpers;
 
 namespace SignalrClient
 {
     class Program
     {
-        //const string ConnectionString = "https://signalrempty.azurewebsites.net/chat";
-        const string ConnectionString = "https://localhost:44350/chat";
+        //const string ConnectionString = "https://localhost:44300/chat";
+        const string ConnectionString = "https://signalrempty.azurewebsites.net/chat";
 
-        static List<IDisposable> _handlers;
         static HubConnection _hubConnection;
         
         static async Task Main(string[] args)
@@ -25,26 +23,25 @@ namespace SignalrClient
             var chatMethodHandler =
                 _hubConnection.On<string, string>(ChatMethods.Text, PrintChatMessage);
 
-            var objectMethodHandler =
-                _hubConnection.On<string, ExampleEntity>(ChatMethods.Object, PrintObjectMessage);
-
-            _handlers = new List<IDisposable>
-            {
-                chatMethodHandler, objectMethodHandler
-            };
-
             await _hubConnection.StartAsync();
 
-            await EnterChat();
+            await Chat();
 
-            _handlers.ForEach(x => x.Dispose());
+            chatMethodHandler.Dispose();
             await _hubConnection.StopAsync();
         }
 
-        static async Task EnterChat()
+        static void PrintChatMessage(string sender, string message)
         {
-            Console.Write("Nickname: ");
-            var nickname = Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[{DateTime.Now.ToShortTimeString()}] {sender}: {message}");
+            Console.ResetColor();
+        }
+
+        static async Task Chat()
+        {
+            Console.Write("Username: ");
+            var username = Console.ReadLine();
             string input;
 
             do
@@ -55,19 +52,17 @@ namespace SignalrClient
                 if (string.IsNullOrWhiteSpace(input))
                     continue;
 
-                if (input.Equals("object"))
-                {
-                    var result = await _hubConnection.InvokeAsync<Guid>(ChatMethods.Object, nickname, new ExampleEntity
-                    {
-                        Data = "some data"
-                    });
-                    Console.WriteLine("Sending object result: " + result);
-                }
-                else
-                {
-                    await _hubConnection.InvokeAsync(ChatMethods.Text, nickname, input);
-                }
+                await _hubConnection.InvokeAsync(ChatMethods.Text, username, input);
+
             } while (input?.Equals("exit") != true);
+        }
+
+        static void ClearCurrentConsoleLine()
+        {
+            var currentLineCursor = Console.CursorTop - 1;
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
         }
     }
 }

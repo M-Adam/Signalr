@@ -11,12 +11,5 @@ namespace SignalrCommon
         {
             await Clients.All.SendAsync(ChatMethods.Text, sender, message);
         }
-
-        [HubMethodName(ChatMethods.Object)]
-        public async Task<Guid> SendObject(string sender, ExampleEntity obj)
-        {
-            await Clients.AllExcept(Context.ConnectionId).SendAsync(ChatMethods.Object, sender, obj);
-            return Guid.NewGuid();
-        }
     }
 }

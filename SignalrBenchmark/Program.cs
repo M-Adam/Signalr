@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
 using SignalrCommon;
 
@@ -11,7 +9,7 @@ namespace SignalrBenchmark
 {
     class Program
     {
-        private const int NumberOfClients = 500;
+        private const int NumberOfClients = 600;
         const string ConnectionStringEmbedded = "https://signalrempty.azurewebsites.net/chat";
         const string ConnectionStringService = "https://signalrazure.azurewebsites.net/chat";
 
